@@ -1,20 +1,15 @@
 import React, { Component } from 'react'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import Blink from './components/Display'
 
 export default class BlinkApp extends Component {
-	_isMounted = false
-
 	state = {
 		data: [],
-		isLoading: true
 	}
 
-	abortController = new AbortController()
-
-	async getFilms() {
+	async getFilms(){
 		return new Promise((resolve, reject) => {
-			fetch('https://ghibliapi.herokuapp.com/films', { signal: this.abortController.signal })
+			fetch('https://ghibliapi.herokuapp.com/films')
 				.then(r => r.json())
 				.then(r => resolve(r))
 				.catch(e => reject(e))
@@ -22,19 +17,13 @@ export default class BlinkApp extends Component {
 	}
 
 	componentDidMount(){
-		this._isMounted = true
-		this.getFilms().then(r => {if (this._isMounted) this.setState({ data: r, isLoading: false })})
+		this.getFilms().then(r => this.setState({ data: r }))
 	}
-
-	componentWillUnmount() {
-		//this.abortController.abort()
-		this._isMounted = false
-	}
-
+	
 	default(){
 		return (
 			<View>
-				<Blink text='agora voce me vê' />
+				<Text>Esperando resposta.</Text>
 			</View>
 		)
 	}
@@ -42,20 +31,12 @@ export default class BlinkApp extends Component {
 	filmsList(){
 		let a = []
 
-		for (let i = 0; i < this.state.data.length; i++) {
-			a.push(<Blink text={this.state.data[i].title} key={i} />)
-		}
+		for (let film of this.state.data) a.push(<Blink film={ film } key={ film.id } />)
 
-		return (
-			<View>
-				{a}
-			</View>
-		)
+		return <View>{ a }</View>
 	}
 
 	render() {
 		return this.state.data.length ? this.filmsList() : this.default()
 	}
-
-	
 }
