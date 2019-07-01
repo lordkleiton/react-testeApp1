@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text } from 'react-native'
+import { ScrollView, View, Text } from 'react-native'
 import Blink from './components/Display'
 
 export default class BlinkApp extends Component {
@@ -19,7 +19,7 @@ export default class BlinkApp extends Component {
 	componentDidMount(){
 		this.getFilms().then(r => this.setState({ data: r }))
 	}
-	
+
 	default(){
 		return (
 			<View>
@@ -33,7 +33,7 @@ export default class BlinkApp extends Component {
 
 		for (let film of this.state.data) a.push(<Blink film={ film } key={ film.id } />)
 
-		return <View>{ a }</View>
+		return <ScrollView>{ a }</ScrollView>
 	}
 
 	render() {
